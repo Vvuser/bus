@@ -4,12 +4,12 @@
 			<div class="offSearch">
 				<div>
 					<i style="font-size: 1.5rem;color: #7bcf37;" class="iconfont icon-weizhi"></i>
-					<input v-model="fromMsg" style="border: none;" type="text" id="from" placeholder="请输入起点" />
+					<input v-model="fromMsg" @click="$router.push({path:'/mapChild'});setStart('')" style="border: none;" type="text" id="from" placeholder="请输入起点" />
 					<i @click="cleanVal(1)" v-show="fromMsg" style="font-size: 1.5rem;color: #c9c9d0;" class="iconfont icon-guanbi close"></i>
 				</div>
 				<div>
 					<i style="font-size: 1.5rem;color: #ff4a39;" class="iconfont icon-weizhi"></i>
-					<input v-model="toMsg" type="text" id="to" placeholder="请输入终点" />
+					<input v-model="toMsg" @click="$router.push({path:'/mapChild'});setEnd('')" type="text" id="to" placeholder="请输入终点" />
 					<i @click="cleanVal(2)" v-show="toMsg" style="font-size: 1.5rem;color: #c9c9d0;" class="iconfont icon-guanbi close"></i>
 				</div>
 			</div>
@@ -17,17 +17,24 @@
 				<i @click="ex" style="font-size: 2rem;color: #ff4a39;" class="iconfont icon-jiaohuan"></i>
 			</div>
 		</div>
-		<button class="officeBtn">查询</button>
+		<button @click="$router.push({path:'/resultChild'})" class="officeBtn">查询</button>
 	</div>
 </template>
 
 <script>
+	import {mapGetters,mapMutations} from 'vuex';
 	export default{
 		data(){
 			return{
 				fromMsg:'',
 				toMsg:''
 			}
+		},
+		computed:{
+			...mapGetters([
+				'start',
+				'end'
+			])
 		},
 		methods:{
 			cleanVal(num){
@@ -41,7 +48,22 @@
 				let t = this.fromMsg;
 				this.fromMsg = this.toMsg;
 				this.toMsg = t;
-			}
+			},
+			toMap(){
+				this.$router.push({
+					path:'/map'
+				})
+			},
+			...mapMutations({
+				setStart:'setStart',
+				setEnd:'setEnd'
+			})
+		},
+		mounted(){
+			console.log(this.fromMsg)
+			this.fromMsg = this.start.name
+			this.toMsg = this.end.name
+			
 		}
 	}
 </script>

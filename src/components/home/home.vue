@@ -2,8 +2,8 @@
 	<div>
 		<header>
 			<div class="selectCity">
-				<h2>
-	 				北京市
+				<h2 @click="cityListBol=!cityListBol">
+	 				{{cityName}}
 	 				<i class="iconfont icon-down-trangle"></i>
 	 			</h2>
 			</div>
@@ -11,6 +11,15 @@
 				<h2>嘟嘟巴士</h2>
 			</div>
 		</header>
+		<div class="cityList" v-show="cityListBol">
+			<div class="cityListTit">当前城市</div>
+			<div class="cityListFlex">
+				{{cityName}}
+				<i class="iconfont icon-weizhi posi"></i>
+			</div>
+			<div class="cityListTit">选择城市</div>
+			<div v-for="item in cityList" @click="setCity(item.city_name);cityListBol=false">{{item.city_name}}</div>
+		</div>
 		<div id="homeHead">
 			<div>
 				<div @click="toRouter('toOffice')" style="border: none;">
@@ -24,17 +33,28 @@
 			</div>
 		</div>
 		<div class="homeBox">
-			<router-view></router-view>
+			<keep-alive>
+				<router-view></router-view>
+			</keep-alive>
 		</div>
 	</div>
 </template>
 
 <script>
+	import {mapGetters,mapMutations} from 'vuex'
+//	console.log(mapGetters,mapMutations)
 	export default {
 		data() {
 			return {
-				homeHeadNum: 0
+				homeHeadNum: 0,
+				cityListBol: false,
+				cityList: [],
 			}
+		},
+		computed: {
+			...mapGetters([
+				'cityName'
+			])
 		},
 		methods: {
 			toRouter(hash) {
@@ -47,12 +67,21 @@
 					this.homeHeadNum = 1;
 				}
 
-			}
+			},
+			...mapMutations({
+				setCity: 'setCity'
+			})
+		},
+		created(){
+			this.http.get('http://localhost/dudu_bus/city_list.php').then(res=>{
+				console.log(res.data)
+				this.cityList = res.data
+			})
 		}
 	}
 </script>
 
-<style>
+<style scoped>
 	#homeHead {
 		display: flex;
 		border-bottom: 1px solid #cdcdd3;
@@ -77,7 +106,28 @@
 		font-weight: bold;
 		color: #9d9da3;
 	}
+	.cityListFlex{
+		display: flex;
+		justify-content: space-between;
+	}
+	.cityList{
+		width: 100vw;
+		height: 93vh;
+		background: white;
+		position: absolute;
+		z-index: 10;
+	}
 	
+	.cityList>div{
+		height: 5vh;
+		border-bottom: 1px solid #cdcdd3;
+		line-height: 5vh;
+		padding-left: 2vw;
+	}
+	.cityListTit{
+		background: #f1f1f1;
+		color: #9e9da3;
+	}
 	.homeBox {
 		width: 100vw;
 		height: 79vh;
@@ -86,7 +136,10 @@
 		flex-direction: column;
 		align-items: center;
 	}
-	
+	.posi{
+		margin-right: 2vw;
+		color: #ff4a39;
+	}
 	.block {
 		width: 87%;
 		height: 80%;

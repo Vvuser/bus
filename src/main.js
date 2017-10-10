@@ -12,9 +12,17 @@ import 'mint-ui/lib/style.css'
 
 Vue.use(MintUI)
 
+//axios
+import Axios from 'axios'
+Vue.prototype.http = Axios
+
+//vuex
+import store from '@/store/index.js'
+
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
+  store,
   router,
   template: '<App/>',
   components: { App }

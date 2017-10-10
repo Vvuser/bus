@@ -3,7 +3,7 @@
 	 	<transition name="bounce">
 	 	<router-view></router-view>
    	</transition>
-    <footer>
+    <footer v-show="bol">
     	<div>
     		<router-link to="home" tag="div">
     			<div><i :class="{check:tabNum==0}"  @click="tabNum=0" class="iconfont icon-icon-system-fi-ticket iconSize"></i></div>
@@ -30,7 +30,17 @@
 export default {
   data(){
   	return {
-  		tabNum:0
+  		tabNum:0,
+  		bol:true
+  	}
+  },
+  created(){
+  	window.onhashchange = ()=>{
+  		if(window.location.hash.indexOf('Child') > -1){
+  			this.bol = false;
+  		}else{
+  			this.bol = true;
+  		}
   	}
   }
 }
